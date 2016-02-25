@@ -1,0 +1,9 @@
+<Alloy>
+	<Window class="container" layout="vertical">
+		<Button id="label" onClick="doClickGet" title="Get" top="50px" />
+		<Button id="label" onClick="doClickGet2" title="Get Single Item" top="75px" />
+		<Button id="label" onClick="doClickPost" title="Post" top="100px" />
+		<Button id="label" onClick="doClickPut" title="Put" top="125px" />
+		<Button id="label" onClick="doClickDelete" title="Delete" top="150px" />
+	</Window>
+</Alloy>
