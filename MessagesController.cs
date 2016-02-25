@@ -101,8 +101,9 @@ namespace ChatWebServices.Controllers
                 conn.Open();
 
                 MySqlCommand cmd = new MySqlCommand(
-                    "INSERT INTO ChatMessages (MessageText, SentBy, SentDateTime) " +
-                    "VALUES (@messageText, @sentBy, now())", conn);
+                    "INSERT INTO ChatMessages (MessageID, MessageText, SentBy, SentDateTime) " +
+                    "VALUES (@id, @messageText, @sentBy, NOW())", conn);
+                cmd.Parameters.AddWithValue("@id", message.MessageID);
                 cmd.Parameters.AddWithValue("@messageText", message.MessageText);
                 cmd.Parameters.AddWithValue("@sentBy", message.SentBy);
                 cmd.Prepare();
@@ -115,8 +116,32 @@ namespace ChatWebServices.Controllers
         }
 
         // PUT api/messages/5
-        public void Put(int id, [FromBody]ChatMessage message)
+        public void Put([FromBody]ChatMessage message)
         {
+            MySqlConnection conn;
+            string myConnectionString;
+            myConnectionString = "server=chatdb.cchk4ntijdhx.us-east-1.rds.amazonaws.com;" +
+                "uid=toddtwiggs;pwd=Kaelyn01;database=chat;";
+            try
+            {
+                conn = new MySql.Data.MySqlClient.MySqlConnection();
+                conn.ConnectionString = myConnectionString;
+                conn.Open();
+
+                MySqlCommand cmd = new MySqlCommand(
+                    "UPDATE ChatMessages" +
+                    "SET MessageText='@messageText', SentBy='@sentBy', SentDateTime=NOW()" +
+                    "WHERE MessageID='@id'", conn);
+                cmd.Parameters.AddWithValue("@id", message.MessageID);
+                cmd.Parameters.AddWithValue("@messageText", message.MessageText);
+                cmd.Parameters.AddWithValue("@sentBy", message.SentBy);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+            }
+            catch (MySql.Data.MySqlClient.MySqlException)
+            {
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
         }
 
         // DELETE api/messages/5
